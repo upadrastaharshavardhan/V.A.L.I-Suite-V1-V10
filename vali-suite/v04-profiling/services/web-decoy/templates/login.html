@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Login — NexusOps Admin{% endblock %}
+
+{% block content %}
+<div class="login-wrapper">
+    <div class="login-card">
+        <h2>Administrator Sign In</h2>
+        <p class="muted">Use your corporate credentials</p>
+
+        {% if error %}
+        <div class="alert error">{{ error }}</div>
+        {% endif %}
+
+        <form method="POST" action="/login" class="login-form">
+            <div class="form-group">
+                <label for="username">Username / Email</label>
+                <input type="text" id="username" name="username" required autocomplete="username"
+                       placeholder="admin@nexusops.internal">
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required autocomplete="current-password"
+                       placeholder="••••••••">
+            </div>
+            <button type="submit" class="btn primary">Sign In</button>
+        </form>
+
+        <div class="login-footer">
+            <a href="#">Forgot password?</a> ·
+            <a href="#">Request access</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

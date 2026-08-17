@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}API Documentation — NexusOps{% endblock %}
+
+{% block content %}
+<h1>Internal API Reference</h1>
+<p class="subtitle">v2.4.1 — For authorized internal use only</p>
+
+<div class="card">
+    <h3>Authentication</h3>
+    <p>All endpoints require a valid Bearer token obtained via <code>/api/v1/auth/token</code>.</p>
+    <pre>Authorization: Bearer &lt;token&gt;</pre>
+</div>
+
+<div class="card" style="margin-top: 1rem;">
+    <h3>Endpoints</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Method</th>
+                <th>Path</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="badge">GET</span></td>
+                <td>/api/v1/health</td>
+                <td>Service health check</td>
+            </tr>
+            <tr>
+                <td><span class="badge">GET</span></td>
+                <td>/api/v1/users</td>
+                <td>List users (requires admin)</td>
+            </tr>
+            <tr>
+                <td><span class="badge">GET</span></td>
+                <td>/api/v1/config</td>
+                <td>Current configuration dump</td>
+            </tr>
+            <tr>
+                <td><span class="badge">POST</span></td>
+                <td>/api/v1/deploy</td>
+                <td>Trigger deployment (staging/prod)</td>
+            </tr>
+            <tr>
+                <td><span class="badge">GET</span></td>
+                <td>/api/v1/backups</td>
+                <td>List available backups</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+{% if "staging" in unlocks %}
+<div class="card highlight" style="margin-top: 1.5rem;">
+    <h3>🔓 Staging Environment Available</h3>
+    <p>Access to the staging control panel has been granted based on your activity.</p>
+    <a href="/staging" class="btn">Open Staging</a>
+</div>
+{% endif %}
+{% endblock %}

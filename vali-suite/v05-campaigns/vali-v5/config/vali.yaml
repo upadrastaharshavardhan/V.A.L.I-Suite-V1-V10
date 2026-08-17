@@ -1,0 +1,69 @@
+# VALI v5 Configuration
+
+decoy:
+  name: "NexusOps Control Plane"
+  version: "5.0.0-internal"
+  env_badge: "PROD"
+
+progressive:
+  unlocks:
+    api_docs:
+      min_actions: 3
+    staging:
+      min_actions: 6
+      requires: api_docs
+    config_panel:
+      min_actions: 9
+      requires: staging
+    backup_files:
+      min_actions: 13
+      requires: config_panel
+    secrets_vault:
+      min_actions: 16
+      requires: backup_files
+
+cost:
+  adaptive_delay: true
+  min_delay_ms: 100
+  max_delay_ms: 750
+
+scoring:
+  weights:
+    depth: 15
+    login_attempts: 7
+    unique_tools: 11
+    event_count: 0.3
+    ssh_commands: 1.3
+    canary_hit: 20
+    fast_automation: 13
+    targeted_paths: 9
+  caps:
+    event_count: 20
+    ssh_commands: 16
+
+profiling:
+  scanner_tools: ["scanner", "dirbuster", "nikto"]
+  automated_rate_threshold: 1.1
+  interactive_min_duration: 40
+  targeted_min_depth: 3
+
+canaries:
+  - id: "canary-aws-key"
+    path: "/api/v1/secrets"
+    priority: high
+  - id: "canary-backup-download"
+    path: "/backups/download/"
+    priority: high
+  - id: "canary-vault"
+    path: "/vault"
+    priority: critical
+  - id: "canary-honey-token"
+    value: "nx_ht_9c4e2a1b7f8d3e6a"
+    priority: high
+
+honey_tokens:
+  - "nx_ht_9c4e2a1b7f8d3e6a"
+  - "AKIA_FAKE_VALI_DECOY_KEY"
+
+logging:
+  max_events_per_session: 600

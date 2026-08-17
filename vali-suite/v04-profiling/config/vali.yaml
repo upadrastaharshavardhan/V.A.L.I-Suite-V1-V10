@@ -1,0 +1,68 @@
+# VALI v4 Advanced Configuration
+
+decoy:
+  name: "NexusOps Control Plane"
+  version: "4.0.0-internal"
+  env_badge: "PROD"
+
+progressive:
+  unlocks:
+    api_docs:
+      min_actions: 3
+      path_hints: ["/dashboard", "/users", "/login"]
+    staging:
+      min_actions: 6
+      requires: api_docs
+    config_panel:
+      min_actions: 10
+      requires: staging
+    backup_files:
+      min_actions: 14
+      requires: config_panel
+    secrets_vault:
+      min_actions: 17
+      requires: backup_files
+
+cost:
+  adaptive_delay: true
+  min_delay_ms: 120
+  max_delay_ms: 800
+  login_extra_delay_ms: 300
+
+scoring:
+  weights:
+    depth: 16
+    login_attempts: 7
+    unique_tools: 11
+    event_count: 0.35
+    ssh_commands: 1.4
+    canary_hit: 22
+    fast_automation: 14
+    targeted_paths: 10
+  caps:
+    event_count: 22
+    ssh_commands: 18
+
+profiling:
+  # Simple rules for attacker labels
+  scanner_tools: ["scanner", "dirbuster", "nikto"]
+  automated_rate_threshold: 1.2   # events per second
+  interactive_min_duration: 45    # seconds
+  targeted_min_depth: 3
+
+canaries:
+  - id: "canary-aws-key"
+    path: "/api/v1/secrets"
+    priority: high
+  - id: "canary-backup-download"
+    path: "/backups/download/"
+    priority: high
+  - id: "canary-vault"
+    path: "/vault"
+    priority: critical
+  - id: "canary-internal-token"
+    value: "nx_live_sk_7f3a9c2e1b8d4f6a"
+    priority: high
+
+logging:
+  max_events_per_session: 500

@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Configuration — NexusOps{% endblock %}
+
+{% block content %}
+<h1>System Configuration</h1>
+<p class="subtitle">Elevated access • Changes are audited</p>
+
+<div class="card">
+    <h3>Core Settings</h3>
+    <table class="table">
+        <tr>
+            <td>AUTH_PROVIDER</td>
+            <td><code>ldap://ldap.nexusops.internal</code></td>
+        </tr>
+        <tr>
+            <td>SESSION_TIMEOUT</td>
+            <td><code>3600</code></td>
+        </tr>
+        <tr>
+            <td>BACKUP_RETENTION_DAYS</td>
+            <td><code>30</code></td>
+        </tr>
+        <tr>
+            <td>FEATURE_FLAGS</td>
+            <td><code>new_ui=true; experimental_api=false</code></td>
+        </tr>
+        <tr>
+            <td>INTERNAL_API_KEY</td>
+            <td><code>nx_••••••••••••••••••••</code> <span class="muted">(masked)</span></td>
+        </tr>
+    </table>
+</div>
+
+<div class="card" style="margin-top: 1rem;">
+    <h3>Danger Zone</h3>
+    <p class="muted">These actions require additional confirmation and are heavily logged.</p>
+    <button class="btn danger" disabled>Rotate All Secrets</button>
+    <button class="btn danger" disabled>Force Logout All Sessions</button>
+</div>
+
+{% if "backup_files" in unlocks %}
+<div class="card highlight" style="margin-top: 1.5rem;">
+    <h3>🔓 Backup Repository Access</h3>
+    <p>You have been granted access to the backup file index.</p>
+    <a href="/backups" class="btn">Browse Backups</a>
+</div>
+{% endif %}
+{% endblock %}
