@@ -1,0 +1,95 @@
+version: "3.8"
+
+services:
+  logger:
+    build: ./services/logger
+    container_name: vali-logger
+    ports:
+      - "${LOGGER_PORT:-8001}:8001"
+    volumes:
+      - ./data/logs:/app/logs
+      - ./data/sessions:/app/sessions
+      - ./data/canaries:/app/canaries
+      - ./data/blocklist:/app/blocklist
+      - ./config:/app/config:ro
+    environment:
+      - LOGGER_API_KEY=${LOGGER_API_KEY:-vali-logger-secret-key-change-me-v8}
+      - WEBHOOK_URL=${WEBHOOK_URL:-}
+      - AUTO_NOTE_ON_HIGH_RISK=${AUTO_NOTE_ON_HIGH_RISK:-true}
+      - HIGH_RISK_THRESHOLD=${HIGH_RISK_THRESHOLD:-60}
+    networks:
+      - vali-net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8001/health')"]
+      interval: 12s
+      timeout: 5s
+      retries: 5
+
+  web-decoy:
+    build: ./services/web-decoy
+    container_name: vali-web-decoy
+    ports:
+      - "${WEB_DECOY_PORT:-8080}:8080"
+    volumes:
+      - ./config:/app/config:ro
+    environment:
+      - LOGGER_URL=http://logger:8001
+      - LOGGER_API_KEY=${LOGGER_API_KEY:-vali-logger-secret-key-change-me-v8}
+      - WEB_DECOY_SECRET=${WEB_DECOY_SECRET:-change-me-to-a-very-long-random-string-v8}
+      - ENABLE_ADAPTIVE_DELAY=${ENABLE_ADAPTIVE_DELAY:-true}
+      - MIN_DELAY_MS=${MIN_DELAY_MS:-70}
+      - MAX_DELAY_MS=${MAX_DELAY_MS:-1000}
+      - ENABLE_LLM=${ENABLE_LLM:-false}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - OPENAI_BASE_URL=${OPENAI_BASE_URL:-https://api.openai.com/v1}
+      - LLM_MODEL=${LLM_MODEL:-gpt-4o-mini}
+    depends_on:
+      logger:
+        condition: service_healthy
+    networks:
+      - vali-net
+    restart: unless-stopped
+
+  ssh-honeypot:
+    build: ./services/ssh-honeypot
+    container_name: vali-ssh
+    ports:
+      - "${SSH_PORT:-2222}:2222"
+    volumes:
+      - ./data/ssh:/app/data
+      - ./services/shared:/app/shared:ro
+    environment:
+      - LOGGER_URL=http://logger:8001
+      - LOGGER_API_KEY=${LOGGER_API_KEY:-vali-logger-secret-key-change-me-v8}
+      - ENABLE_LLM=${ENABLE_LLM:-false}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - OPENAI_BASE_URL=${OPENAI_BASE_URL:-https://api.openai.com/v1}
+      - LLM_MODEL=${LLM_MODEL:-gpt-4o-mini}
+      - PYTHONPATH=/app
+    depends_on:
+      logger:
+        condition: service_healthy
+    networks:
+      - vali-net
+    restart: unless-stopped
+
+  dashboard:
+    build: ./services/dashboard
+    container_name: vali-dashboard
+    ports:
+      - "${DASHBOARD_PORT:-8501}:8501"
+    volumes:
+      - ./data/logs:/app/logs:ro
+      - ./data/sessions:/app/sessions:ro
+      - ./data/canaries:/app/canaries:ro
+      - ./data/blocklist:/app/blocklist:ro
+    depends_on:
+      - logger
+    networks:
+      - vali-net
+    restart: unless-stopped
+
+networks:
+  vali-net:
+    driver: bridge

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Internal Admin Portal{% endblock %}</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <span class="logo">◈</span> NexusOps Admin
+            <span class="env-badge">PROD</span>
+        </div>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/dashboard">Dashboard</a>
+            <a href="/users">Users</a>
+            <a href="/login">Login</a>
+            {% if "api_docs" in unlocks %}
+            <a href="/api/docs" class="unlocked">API Docs</a>
+            {% endif %}
+            {% if "staging" in unlocks %}
+            <a href="/staging" class="unlocked">Staging</a>
+            {% endif %}
+            {% if "config_panel" in unlocks %}
+            <a href="/config" class="unlocked">Config</a>
+            {% endif %}
+            {% if "backup_files" in unlocks %}
+            <a href="/backups" class="unlocked">Backups</a>
+            {% endif %}
+            {% if "secrets_vault" in unlocks %}
+            <a href="/vault" class="unlocked">Vault</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <main class="container">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <span>NexusOps Internal Systems • v2.4.1</span>
+        <span class="muted">Unauthorized access is monitored and prohibited</span>
+    </footer>
+</body>
+</html>

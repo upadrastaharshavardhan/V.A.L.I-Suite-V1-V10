@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard — NexusOps Admin{% endblock %}
+
+{% block content %}
+<h1>Operations Dashboard</h1>
+<p class="subtitle">Real-time overview of internal systems</p>
+
+<div class="grid">
+    <div class="card metric">
+        <div class="metric-value">142</div>
+        <div class="metric-label">Active Sessions</div>
+    </div>
+    <div class="card metric">
+        <div class="metric-value">98.7%</div>
+        <div class="metric-label">Uptime (30d)</div>
+    </div>
+    <div class="card metric">
+        <div class="metric-value">23</div>
+        <div class="metric-label">Open Incidents</div>
+    </div>
+    <div class="card metric">
+        <div class="metric-value">1.2k</div>
+        <div class="metric-label">API Calls / min</div>
+    </div>
+</div>
+
+<div class="card" style="margin-top: 1.5rem;">
+    <h3>Recent Activity</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Time</th>
+                <th>User</th>
+                <th>Action</th>
+                <th>Resource</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>14:22</td>
+                <td>j.smith</td>
+                <td>config.update</td>
+                <td>prod-db-03</td>
+            </tr>
+            <tr>
+                <td>14:18</td>
+                <td>deploy-bot</td>
+                <td>deploy.success</td>
+                <td>api-gateway</td>
+            </tr>
+            <tr>
+                <td>14:05</td>
+                <td>a.patel</td>
+                <td>user.create</td>
+                <td>staging-env</td>
+            </tr>
+            <tr>
+                <td>13:51</td>
+                <td>monitoring</td>
+                <td>alert.ack</td>
+                <td>backup-job</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+{% if "api_docs" in unlocks %}
+<div class="card highlight" style="margin-top: 1.5rem;">
+    <h3>🔓 Unlocked: Internal API Documentation</h3>
+    <p>You now have access to the internal API reference.</p>
+    <a href="/api/docs" class="btn">Open API Docs</a>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Secrets Vault — NexusOps{% endblock %}
+
+{% block content %}
+<h1>Secrets Vault</h1>
+<p class="subtitle">High-sensitivity credentials • Access is fully audited</p>
+
+<div class="alert warning">
+  ⚠ You are viewing a restricted vault. All access is logged and reviewed.
+</div>
+
+<div class="card">
+  <h3>Active Secrets (masked)</h3>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Last Rotated</th>
+        <th>Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>prod-db-primary</td>
+        <td>Database</td>
+        <td>2026-08-10</td>
+        <td><code>psql://••••••••@db.internal:5432/prod</code></td>
+      </tr>
+      <tr>
+        <td>aws-deploy-key</td>
+        <td>Cloud</td>
+        <td>2026-08-12</td>
+        <td><code>AKIA••••••••••••••••</code></td>
+      </tr>
+      <tr>
+        <td>internal-api-token</td>
+        <td>API</td>
+        <td>2026-08-14</td>
+        <td><code>nx_live_sk_••••••••••••••••</code></td>
+      </tr>
+      <tr>
+        <td>backup-encryption</td>
+        <td>Crypto</td>
+        <td>2026-07-28</td>
+        <td><code>aes256:••••••••••••</code></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<p class="muted" style="margin-top:1rem;">
+  Actual secret values are never displayed in the UI. Use the approved secret broker for retrieval.
+</p>
+{% endblock %}
