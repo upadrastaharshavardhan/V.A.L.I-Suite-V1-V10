@@ -1,0 +1,60 @@
+# VALI v3 Advanced Configuration
+
+decoy:
+  name: "NexusOps Control Plane"
+  version: "3.1.0-internal"
+  env_badge: "PROD"
+
+progressive:
+  unlocks:
+    api_docs:
+      min_actions: 3
+    staging:
+      min_actions: 7
+      requires: api_docs
+    config_panel:
+      min_actions: 11
+      requires: staging
+    backup_files:
+      min_actions: 15
+      requires: config_panel
+    secrets_vault:
+      min_actions: 18
+      requires: backup_files
+
+cost:
+  adaptive_delay: true
+  min_delay_ms: 150
+  max_delay_ms: 900
+  login_extra_delay_ms: 350
+
+scoring:
+  # Weights for session risk score (0-100)
+  weights:
+    depth: 18
+    login_attempts: 8
+    unique_tools: 12
+    event_count: 0.4          # per event, capped
+    ssh_commands: 1.5         # per command
+    canary_hit: 25
+    fast_automation: 15       # high request rate
+  caps:
+    event_count: 25
+    ssh_commands: 20
+
+canaries:
+  - id: "canary-aws-key"
+    type: "fake_secret"
+    path: "/api/v1/secrets"
+    description: "Fake AWS-style key endpoint"
+  - id: "canary-backup-download"
+    type: "fake_file"
+    path: "/backups/download/prod-db-full"
+    description: "Fake production backup download"
+  - id: "canary-internal-token"
+    type: "header_or_param"
+    value: "nx_live_sk_7f3a9c2e1b8d4f6a"
+    description: "Fake internal API token"
+
+logging:
+  max_events_per_session: 400
