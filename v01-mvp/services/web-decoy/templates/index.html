@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}NexusOps Admin — Home{% endblock %}
+
+{% block content %}
+<div class="hero">
+    <h1>Internal Administration Portal</h1>
+    <p class="subtitle">Centralized management for NexusOps infrastructure</p>
+</div>
+
+<div class="grid">
+    <div class="card">
+        <h3>System Status</h3>
+        <div class="status-row">
+            <span class="dot green"></span> Core Services Operational
+        </div>
+        <div class="status-row">
+            <span class="dot green"></span> Authentication Service
+        </div>
+        <div class="status-row">
+            <span class="dot yellow"></span> Backup Scheduler (degraded)
+        </div>
+        <div class="status-row">
+            <span class="dot green"></span> API Gateway
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>Quick Actions</h3>
+        <ul class="action-list">
+            <li><a href="/login">Administrator Login</a></li>
+            <li><a href="/dashboard">View Dashboard</a></li>
+            <li><a href="/users">User Management</a></li>
+            <li><a href="/api/v1/health">API Health Check</a></li>
+        </ul>
+    </div>
+
+    <div class="card warning">
+        <h3>⚠ Notices</h3>
+        <p>Staging environment credentials were rotated on 2026-08-12. Update local configs.</p>
+        <p class="muted">Last security scan: 3 days ago</p>
+    </div>
+</div>
+
+{% if actions > 0 %}
+<div class="debug-info muted">
+    <!-- Internal debug (looks accidental) -->
+    session_actions: {{ actions }} | unlocks: {{ unlocks | length }}
+</div>
+{% endif %}
+{% endblock %}
